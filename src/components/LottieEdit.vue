@@ -1,5 +1,5 @@
 <template>
-<div style = "background-color: white; width: 100%; height: 100vh; display: flex; flex-flow: row">
+<div style = "background-color: white; width: 100%; height: 100vh; display: flex; flex-flow: row; justify-content:center">
     <!-- i am aware that i hacked together veutify to make it work for my quick UI -->
     <v-card
         class="pa-5"
@@ -35,7 +35,7 @@
                         </v-list-tile-action>
                         <v-list-tile-content>   
                             <v-btn
-                                @click="toggleColorPicker(color['color'])"
+                                @click="toggleColorPicker(color)"
                                 color="white"
                                 class="white--text"
                                 :style="`background:${color['color']} !important`"
@@ -51,9 +51,7 @@
             </v-navigation-drawer>
         </v-card>
     </v-card>
-    <div class = "lottie-container">
-        <lottie :options="lottieOptions" :height="400" :width="400"/>
-    </div>
+    <div ref="lottie" class = "lottie-container"> </div>
     <v-dialog
       v-model="showingColorPicker"
       width="500"
@@ -75,7 +73,7 @@
           <v-btn
             color="primary"
             flat
-            @click="showingColorPicker = false"
+            @click="selectedColor()"
           >
             Accept
           </v-btn>
@@ -134,42 +132,40 @@
             <v-icon>mail</v-icon>
         </v-btn>
     </v-fab-transition>
-    <v-fab-transition>
-        <v-btn
-            v-show="!fabHidden"
-            color="dark"
-            fab
-            dark
-            medium
-            absolute
-            top
-            left
-            style="top: 1.5%"
-            @click="goBack()"
-        >
-            <v-icon>arrow_back</v-icon>
-        </v-btn>
-    </v-fab-transition>
+    <v-btn
+      color="black"
+      class="white--text"
+      id="downloadButton"
+    >
+      Download
+      <v-icon right dark>cloud_download</v-icon>
+    </v-btn>
 </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Lottie from 'vue-lottie'
 import { Chrome } from 'vue-color'
 import { Draggable } from 'draggable-vue-directive'
 
 export default {
     created() {
         this.jsonAnimation = this.$store.state.jsonAnimation
-        this.lottieOptions.animationData = this.$store.state.jsonAnimation
-        this.$colors(this.lottieOptions.animationData, this.colorResponse)
+        this.$colors(this.jsonAnimation, this.colorResponse)
         setTimeout(() => {
             this.fabHidden = false
         }, 1000)
     },
+    mounted() {
+        this.anim = lottie.loadAnimation({
+            autoplay: true,
+            loop: true,
+            animationData: this.jsonAnimation,
+            renderer: 'svg',
+            container: this.$refs['lottie']
+        })
+    },
     components: {
-       'lottie': Lottie,
        'chrome-picker': Chrome
     },
     directives: {
@@ -178,13 +174,12 @@ export default {
     data() {
         return {
             jsonAnimation: {},
-            lottieOptions: {
-                animationData: {}
-            },
             colors: [],
             currentColor: '#3d3d3d',
             showingColorPicker: false,
-            fabHidden: true
+            fabHidden: true,
+            currentColorDetails: {},
+            anim: {}
         }
     },
     computed: {
@@ -192,17 +187,33 @@ export default {
     },
     methods: {
         colorResponse(color) {
-            console.log(color)
             this.colors[color['i']] = color
-            console.log(this.colors)
         },
         toggleColorPicker(color) {
-            this.currentColor = color
+            this.currentColorDetails = color
+            this.currentColor = color['color']
             this.showingColorPicker = true
         },
-        goBack() {
-            console.log('going back')
-            window.location.href='/'
+        selectedColor() {
+            let { currentColorDetails, currentColor, showingColorPicker, jsonAnimation } = this
+            let details = currentColorDetails
+            jsonAnimation.layers[details.i].shapes[details.j].it[details.k].c.k = [
+                    this.$toVector(currentColor['rgba']['r']),
+                    this.$toVector(currentColor['rgba']['g']),
+                    this.$toVector(currentColor['rgba']['b']),
+                    currentColor['rgba']['a']
+            ]
+            this.$store.dispatch('updateJsonAnimation', jsonAnimation)
+            this.$colors(jsonAnimation, this.colorResponse)
+            this.showingColorPicker = false
+            this.anim.destroy()
+            this.anim = lottie.loadAnimation({
+                autoplay: true,
+                loop: true,
+                animationData: this.jsonAnimation,
+                renderer: 'svg',
+                container: this.$refs['lottie']
+            })
         }
     },
 }
@@ -218,8 +229,9 @@ export default {
    background: black;
 }
 .pa-5 {
-    align-self: flex-end;
     z-index: 100;
+    position: absolute;
+    left:0;
     background-color: transparent;
 }
 .lottie-container {
@@ -230,5 +242,13 @@ export default {
     align-items: center;
     justify-content: center;
     position: absolute;
+}
+#downloadButton {
+    align-self: flex-end;
+    margin: 0;
+    margin-bottom:2%;
+}
+.white--text, .v-list {
+    font-family: 'Open Sans', sans-serif;
 }
 </style>

@@ -1,13 +1,20 @@
 <template>
-<div style = "background-color: LightGrau; width: 100%; height: 100%">
-    <vue-dropzone 
-        ref="jsonDropzone" 
-        id="dropzone" 
-        :options="dropzoneOptions"
-         @vdropzone-file-added="fileAdded" 
-         @vdropzone-success="uploadSuccess"
-    ></vue-dropzone>
-    
+<div style = "background-color: white; width: 100vw; height: 100vh;display:flex;align-items:center;justify-content:flex-start;flex-direction:column">
+    <h1 id="title">
+        JSON Animation Editor
+    </h1>
+    <h3 id="description">
+        Drag, drop, or click the box below to upload your file
+    </h3>
+    <v-card id="dropzoneContainer">
+        <vue-dropzone 
+            ref="jsonDropzone" 
+            id="dropzone" 
+            :options="dropzoneOptions"
+            @vdropzone-file-added="fileAdded" 
+            @vdropzone-success="uploadSuccess"
+        ></vue-dropzone>
+      </v-card>
 </div>
 </template>
 
@@ -70,5 +77,22 @@ export default {
 </script>
 
 <style scoped>
-
+#dropzone {
+    height: 100%;
+    width: 100%;
+}
+#dropzoneContainer {
+    width: 40%;
+    height: 40%;
+    margin-top: 10%;
+}
+#title {
+    font-family: 'Lobster', cursive;
+    margin-top:10%;
+    font-size: 3.5rem;
+}
+#description {
+    font-family: 'Open Sans', sans-serif;
+    margin-top: 2%;
+}
 </style>

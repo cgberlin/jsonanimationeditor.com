@@ -2,8 +2,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 Vue.use(Vuex);
 
-//import CryptoJS from 'crypto-js';
-
 //create the store
 export const store = new Vuex.Store({
   state: {
