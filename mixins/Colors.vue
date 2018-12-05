@@ -1,5 +1,5 @@
 <script>
-   import { rgbToHex } from 'color-invert';
+   import { rgbToHex } from 'color-invert'
    export default {
         methods: {
             $toVector(n) {
@@ -16,13 +16,13 @@
                         if (shape.it) {
                             shape.it.forEach((prop, k) => {
                             if (['fl', 'st'].includes(prop.ty)) {
-                                const color = prop.c.k;
+                                const color = prop.c.k
 
-                                let [r, g, b, a] = color;
+                                let [r, g, b, a] = color
 
-                                r = this.$fromVector(r);
-                                g = this.$fromVector(g);
-                                b = this.$fromVector(b);
+                                r = this.$fromVector(r)
+                                g = this.$fromVector(g)
+                                b = this.$fromVector(b)
 
                                 const meta = {
                                     i,
@@ -35,10 +35,10 @@
                                     nm: prop.nm,
                                     asset,
                                     color: rgbToHex(r, g, b)
-                                };
+                                }
 
                                 if (cb) {
-                                    cb(meta);
+                                    cb(meta)
                                 }
                             }
                             });
@@ -49,38 +49,36 @@
                 }
             },
             $newColor(rows, selectedRow, selectedCol, json, color) {
-               // const { rows, selectedRow, selectedCol, json } = this.state;
+                const { i, j, k, a, asset } = rows[selectedRow]
 
-                const { i, j, k, a, asset } = rows[selectedRow];
+                const newColor = color.hex
 
-                const newColor = color.hex;
+                const newRows = rows
+                newRows[selectedRow][this.cols[selectedCol].prop] = newColor
+                this.setState({ rows: newRows })
 
-                const newRows = rows;
-                newRows[selectedRow][this.cols[selectedCol].prop] = newColor;
-                this.setState({ rows: newRows });
+                const newJson = JSON.parse(json)
 
-                const newJson = JSON.parse(json);
-
-                const { r, g, b } = hexToRgb(newColor);
+                const { r, g, b } = hexToRgb(newColor)
 
                 if (asset === -1) {
                 if (newJson && newJson.layers) {
                     newJson.layers[i].shapes[j].it[k].c.k = [
-                    toUnitVector(r),
-                    toUnitVector(g),
-                    toUnitVector(b),
-                    a
-                    ];
+                        toUnitVector(r),
+                        toUnitVector(g),
+                        toUnitVector(b),
+                        a
+                    ]
                 }
                 } else {
                 // eslint-disable-next-line no-lonely-if
                 if (newJson && newJson.assets) {
                     newJson.assets[asset].layers[i].shapes[j].it[k].c.k = [
-                    toUnitVector(r),
-                    toUnitVector(g),
-                    toUnitVector(b),
-                    a
-                    ];
+                        toUnitVector(r),
+                        toUnitVector(g),
+                        toUnitVector(b),
+                        a
+                    ]
                 }
                 }
             }

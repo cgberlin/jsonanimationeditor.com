@@ -11,10 +11,14 @@
             ref="jsonDropzone" 
             id="dropzone" 
             :options="dropzoneOptions"
-            @vdropzone-file-added="fileAdded" 
             @vdropzone-success="uploadSuccess"
         ></vue-dropzone>
-      </v-card>
+    </v-card>
+    <p id="supportText">
+        Work in progress! <br/>
+        For bugs or to contribute please use Github <br/>
+        <a href="https://github.com/cgberlin/jsonanimationeditor.com">Repository</a>
+    </p>
 </div>
 </template>
 
@@ -42,25 +46,13 @@ export default {
             }
         }
     },
-    computed: {
-        
-    },
     methods: {
-        fileAdded(file) {
-            
-        },
         uploadSuccess(file) {
-           
-            const reader = new FileReader()
-           
+            const reader = new FileReader() 
             reader.onload = e => this.parseFile(file, file.name, e);
-
             reader.readAsText(file);
         },
         parseFile(source, fileName, e) {
-            console.log(source)
-            console.log(`filename:${fileName}`)
-            console.log(JSON.parse(e.target.result))
             if (!e.target || !e.target.result || e.target.result == '') {
                 alert('Whoops')
                 return
@@ -68,7 +60,6 @@ export default {
             let jsonAnimation = JSON.parse(e.target.result)
             this.$store.dispatch('updateJsonAnimation', jsonAnimation)
             this.$router.push('lottie-edit')
-            console.log(this.$store.state.jsonAnimation)
         }
         
     },
@@ -91,8 +82,13 @@ export default {
     margin-top:10%;
     font-size: 3.5rem;
 }
-#description {
+#description, #supportText {
     font-family: 'Open Sans', sans-serif;
     margin-top: 2%;
+}
+#supportText {
+    text-align: center;
+    position: absolute;
+    bottom: 1%;
 }
 </style>

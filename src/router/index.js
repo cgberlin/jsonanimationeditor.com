@@ -1,11 +1,9 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Landing from '../components/Landing.vue';
-import LottieEdit from '../components/LottieEdit.vue';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Landing from '../components/Landing.vue'
+import LottieEdit from '../components/LottieEdit.vue'
 
-import { store } from '../store';
-
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   mode: 'history',
@@ -17,4 +15,4 @@ export default new Router({
       component: Error
     }
   ]
-});
+})

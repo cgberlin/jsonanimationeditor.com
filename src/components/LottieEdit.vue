@@ -136,6 +136,7 @@
       color="black"
       class="white--text"
       id="downloadButton"
+      @click="downloadJson()"
     >
       Download
       <v-icon right dark>cloud_download</v-icon>
@@ -182,9 +183,6 @@ export default {
             anim: {}
         }
     },
-    computed: {
-        
-    },
     methods: {
         colorResponse(color) {
             this.colors[color['i']] = color
@@ -214,6 +212,16 @@ export default {
                 renderer: 'svg',
                 container: this.$refs['lottie']
             })
+        },
+        downloadJson() {
+            let { jsonAnimation } = this.$store.state
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonAnimation))
+            let downloadAnchorNode = document.createElement('a')
+            downloadAnchorNode.setAttribute("href",     dataStr)
+            downloadAnchorNode.setAttribute("download", new Date().toString() + ".json")
+            document.body.appendChild(downloadAnchorNode) // required for firefox
+            downloadAnchorNode.click()
+            downloadAnchorNode.remove()
         }
     },
 }
@@ -235,7 +243,8 @@ export default {
     background-color: transparent;
 }
 .lottie-container {
-    width: 100%;
+    width: 50%;
+    margin: 0 auto;
     height: 100%;   
     display: flex;
     align-content: center;
