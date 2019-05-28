@@ -1,6 +1,6 @@
 <template>
     <div style="height:100%; width: 100%; overflow-y: hidden !important;">
-        error
+        Error retreiving page!
     </div>
 </template>
 
